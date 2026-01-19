@@ -1,0 +1,16 @@
+node_modules/
+.expo/
+dist/
+*.log
+.DS_Store
+*.pem
+
+# Expo
+.expo-shared/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
