@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  Linking,
 } from 'react-native';
 import { Pedometer } from 'expo-sensors';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -171,13 +172,51 @@ export default function App() {
         startMonitoring();
       } else {
         Alert.alert(
-          'Permission Denied',
-          'Step counting requires Motion & Fitness permission. Please enable it in device settings.',
-          [{ text: 'OK' }]
+          'Permission Required',
+          'Step counting requires Motion & Fitness permission. Please enable it in your device settings.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            {
+              text: 'Open Settings',
+              onPress: async () => {
+                try {
+                  if (Platform.OS === 'ios') {
+                    await Linking.openURL('app-settings:');
+                  } else {
+                    await Linking.openSettings();
+                  }
+                } catch (error) {
+                  console.error('Failed to open settings:', error);
+                  Alert.alert('Error', 'Could not open settings. Please manually enable Motion & Fitness permission for this app.');
+                }
+              },
+            },
+          ]
         );
       }
     } catch (error) {
       console.error('Permission request error:', error);
+      Alert.alert(
+        'Permission Error',
+        'Failed to request permission. Please enable Motion & Fitness permission in your device settings.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Open Settings',
+            onPress: async () => {
+              try {
+                if (Platform.OS === 'ios') {
+                  await Linking.openURL('app-settings:');
+                } else {
+                  await Linking.openSettings();
+                }
+              } catch (err) {
+                console.error('Failed to open settings:', err);
+              }
+            },
+          },
+        ]
+      );
     }
   };
 
