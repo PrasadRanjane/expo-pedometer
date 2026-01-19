@@ -65,8 +65,24 @@ export default function App() {
         if (request.status !== 'granted') {
           Alert.alert(
             'Permission Required',
-            'Step counting requires Motion & Fitness permission. Please enable it in settings.',
-            [{ text: 'OK' }]
+            'Step counting requires Motion & Fitness permission. Please enable it in your device settings.',
+            [
+              { text: 'Cancel', style: 'cancel' },
+              {
+                text: 'Open Settings',
+                onPress: async () => {
+                  try {
+                    if (Platform.OS === 'ios') {
+                      await Linking.openURL('app-settings:');
+                    } else {
+                      await Linking.openSettings();
+                    }
+                  } catch (error) {
+                    console.error('Failed to open settings:', error);
+                  }
+                },
+              },
+            ]
           );
           return;
         }
